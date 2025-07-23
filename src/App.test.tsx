@@ -51,4 +51,14 @@ describe('App component routing', () => {
     );
     expect(screen.getByText('商品管理', { selector: 'div.ant-card-head-title' })).toBeInTheDocument();
   });
+
+  it('renders CompanyPage when authenticated and navigating to /company', () => {
+    useAppStore.setState({ currentUser: mockUser });
+    render(
+      <MemoryRouter initialEntries={['/company']}>
+        <App />
+      </MemoryRouter>
+    );
+    expect(screen.getByText('発行元管理', { selector: 'div.ant-card-head-title' })).toBeInTheDocument();
+  });
 });

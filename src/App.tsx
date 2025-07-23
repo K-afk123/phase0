@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import CustomerPage from './pages/CustomerPage';
 import ProductPage from './pages/ProductPage';
+import CompanyPage from './pages/CompanyPage';
 
 function App() {
   const currentUser = useAppStore((state) => state.currentUser);
@@ -25,6 +26,10 @@ function App() {
       <Route 
         path="/products" 
         element={currentUser ? <ProductPage /> : <Navigate to="/login" />} 
+      />
+      <Route 
+        path="/company" 
+        element={currentUser ? <CompanyPage /> : <Navigate to="/login" />} 
       />
     </Routes>
   )
