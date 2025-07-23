@@ -1,0 +1,55 @@
+# .github/workflows/ci.yml
+
+# ワークフローの名前
+name: Node.js CI
+
+# ワークフローが実行されるトリガーを定義
+on:
+  # mainブランチへのpush時
+  push:
+    branches: [ "main" ]
+  # mainブランチへのpull request時
+  pull_request:
+    branches: [ "main" ]
+
+# ワークフローは1つ以上のジョブで構成される
+jobs:
+  # このワークフローには "build-and-test" という名前のジョブが1つだけ含まれる
+  build-and-test:
+    # ジョブが実行される仮想環境の種類
+    runs-on: ubuntu-latest
+
+    # ステップは、ジョブの一部として実行される一連のタスクを表す
+    steps:
+      # 1. リポジトリのコードをチェックアウトする
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. 指定したバージョンのNode.js環境をセットアップする
+      # .nvmrcファイルとバージョンを合わせる
+      - name: Setup Node.js version 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          # npmの依存関係をキャッシュして、次回以降の実行を高速化する
+          cache: 'npm'
+
+      # 3. 依存関係をインストールする
+      - name: Install dependencies
+        run: npm install
+
+      # 4. ESLintによる静的コード解析を実行する
+      - name: Run linter
+        run: npm run lint
+
+      # 5. Vitestによるユニットテストを実行する (UIなしのCIモード)
+      - name: Run tests
+        run: npm run test
+
+      # 6. Storybookのビルドを実行して、エラーが出ないことを確認する
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      # 7. 本番用のアプリケーションビルドを実行して、エラーが出ないことを確認する
+      - name: Build application
+        run: npm run build
