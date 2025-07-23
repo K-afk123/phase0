@@ -3,6 +3,7 @@ import { useAppStore } from './store/appStore';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import CustomerPage from './pages/CustomerPage';
+import ProductPage from './pages/ProductPage';
 
 function App() {
   const currentUser = useAppStore((state) => state.currentUser);
@@ -20,6 +21,10 @@ function App() {
       <Route 
         path="/customers" 
         element={currentUser ? <CustomerPage /> : <Navigate to="/login" />} 
+      />
+      <Route 
+        path="/products" 
+        element={currentUser ? <ProductPage /> : <Navigate to="/login" />} 
       />
     </Routes>
   )
