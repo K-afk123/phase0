@@ -1,8 +1,27 @@
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAppStore } from './store/appStore';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import CustomerPage from './pages/CustomerPage';
+
 function App() {
+  const currentUser = useAppStore((state) => state.currentUser);
+
   return (
-    <>
-      <h1>Vite + React</h1>
-    </>
+    <Routes>
+      <Route 
+        path="/login" 
+        element={!currentUser ? <LoginPage /> : <Navigate to="/" />} 
+      />
+      <Route 
+        path="/" 
+        element={currentUser ? <DashboardPage /> : <Navigate to="/login" />} 
+      />
+      <Route 
+        path="/customers" 
+        element={currentUser ? <CustomerPage /> : <Navigate to="/login" />} 
+      />
+    </Routes>
   )
 }
 

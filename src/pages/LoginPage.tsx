@@ -1,21 +1,29 @@
 import { Button, Card, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useAppStore } from '../store/appStore';
+import { useEffect } from 'react';
 
 const LoginPage = () => {
-  // ZustandストアからloginアクションとisLoading状態を取得
-  const { login, isLoading } = useAppStore();
+  const { login, isLoading, error, currentUser } = useAppStore();
 
   const onFinish = async (values: { username: string; password: string }) => {
-    try {
-      await login(values.username, values.password);
-      message.success('ログインしました');
-      // TODO: ログイン後のページにリダイレクト
-    } catch (error) {
-      // ストア側でエラーが設定されるので、ここでは何もしなくても良い
-      // 必要であれば、固有のエラーハンドリングをここに追加
-    }
+    await login(values.username, values.password);
   };
+
+  // ストアのエラー状態を監視し、エラーメッセージを表示
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
+
+  // ログイン成功を監視し、成功メッセージを表示
+  useEffect(() => {
+    // currentUserがnullでなくなり、ローディングが終わったら成功とみなす
+    if (currentUser && !isLoading) {
+      message.success('ログインしました');
+    }
+  }, [currentUser, isLoading]);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#f0f2f5' }}>
