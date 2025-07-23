@@ -1,10 +1,20 @@
-import { Button, Card, Form, Input } from 'antd';
+import { Button, Card, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { useAppStore } from '../store/appStore';
 
 const LoginPage = () => {
-  const onFinish = (values: unknown) => {
-    console.log('Received values of form: ', values);
-    // ここに実際のログイン処理を後で追加します
+  // ZustandストアからloginアクションとisLoading状態を取得
+  const { login, isLoading } = useAppStore();
+
+  const onFinish = async (values: { username: string; password: string }) => {
+    try {
+      await login(values.username, values.password);
+      message.success('ログインしました');
+      // TODO: ログイン後のページにリダイレクト
+    } catch (error) {
+      // ストア側でエラーが設定されるので、ここでは何もしなくても良い
+      // 必要であれば、固有のエラーハンドリングをここに追加
+    }
   };
 
   return (
@@ -33,7 +43,7 @@ const LoginPage = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+            <Button type="primary" htmlType="submit" style={{ width: '100%' }} loading={isLoading}>
               ログイン
             </Button>
           </Form.Item>

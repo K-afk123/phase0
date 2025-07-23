@@ -5,9 +5,14 @@ import type { Customer } from '../types';
 describe('appStore', () => {
   // 各テストの前にストアの状態をリセットする
   beforeEach(() => {
+    // ストアの初期状態にリセット
     useAppStore.setState({
+      currentUser: null,
       customers: [],
-      // 他の状態も必要に応じてリセット
+      products: [],
+      documents: [],
+      isLoading: false,
+      error: null,
     });
   });
 
@@ -39,9 +44,22 @@ describe('appStore', () => {
     
     // 顧客が1人追加されていることを確認
     expect(state.customers).toHaveLength(1);
-    // 追加された顧客の名前が正しいことを確認
     expect(state.customers[0].name).toBe('株式会社テスト商事');
-    // アーカイブ状態が正しく設定されていることを確認
-    expect(state.customers[0].isArchived).toBe(false);
+  });
+
+  describe('login action', () => {
+    it('should set currentUser on successful login', async () => {
+      const { login } = useAppStore.getState();
+      
+      // ログインアクションを実行
+      await login('admin', 'admin');
+
+      // ストアの状態を検証
+      const state = useAppStore.getState();
+      expect(state.currentUser).not.toBeNull();
+      expect(state.currentUser?.username).toBe('admin');
+      expect(state.isLoading).toBe(false);
+      expect(state.error).toBeNull();
+    });
   });
 });

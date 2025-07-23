@@ -1,27 +1,26 @@
 import { create } from 'zustand';
 import type { User, CompanyProfile, Customer, Product, Document } from '../types';
 
+// --- ログイン成功時に設定するモックユーザー ---
+const mockUser: User = {
+  id: 'user-1',
+  username: 'admin',
+  roleId: 'role-admin',
+};
+
 // --- ストアの状態(State)の型定義 ---
 interface AppState {
-  // 認証関連
   currentUser: User | null;
-  
-  // マスターデータ
   companyProfiles: CompanyProfile[];
   customers: Customer[];
   products: Product[];
-
-  // 書類データ
   documents: Document[];
-  
-  // UIの状態
   isLoading: boolean;
   error: string | null;
 }
 
 // --- ストアのアクション(Action)の型定義 ---
 interface AppActions {
-  // アクションの例 (後で実装)
   login: (username: string, pass: string) => Promise<void>;
   logout: () => void;
   addCustomer: (customer: Omit<Customer, 'id' | 'isArchived'>) => void;
@@ -40,10 +39,17 @@ export const useAppStore = create<AppState & AppActions>((set) => ({
 
   // --- アクションの実装 ---
   login: async (username, password) => {
-    // TODO: ログイン処理を実装
-    console.log('Logging in with:', username, password);
-    // 例: ログイン成功時
-    // set({ currentUser: fetchedUser });
+    set({ isLoading: true, error: null });
+    // API呼び出しをシミュレートするための、0.5秒の待機
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    if (username === 'admin' && password === 'admin') {
+      // ログイン成功
+      set({ currentUser: mockUser, isLoading: false });
+    } else {
+      // ログイン失敗
+      set({ error: 'ユーザー名またはパスワードが違います', isLoading: false });
+    }
   },
 
   logout: () => {
